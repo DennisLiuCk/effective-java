@@ -42,6 +42,7 @@ git clone https://github.com/DennisLiuCk/effective-java.git
 
 2. Navigate to specific chapters to find examples and notes
 3. Each item from the book has its own directory with relevant examples
+4. Jdk17+ is recommended to run the code for compatibility reasons(because that's the version I'm using when writing the demo code)
 
 ## Contributing
 
