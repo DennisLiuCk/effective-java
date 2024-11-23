@@ -69,6 +69,159 @@ public class NyPizza extends Pizza {
 }
 ```
 
+## Advanced Examples: Pizza Variants
+
+### 1. Calzone Pizza
+Calzone represents a "folded" pizza with a special characteristic of having sauce either inside or outside.
+
+```java
+class Calzone extends Pizza {
+    private final boolean sauceInside;  // Special characteristic
+
+    public static class Builder extends Pizza.Builder<Builder> {
+        private boolean sauceInside = false;  // Default: sauce outside
+
+        public Builder sauceInside() {
+            sauceInside = true;
+            return this;
+        }
+
+        @Override public Calzone build() { ... }
+        @Override protected Builder self() { return this; }
+    }
+}
+
+// Usage example:
+Calzone calzone = new Calzone.Builder()
+    .addTopping(MUSHROOM)
+    .sauceInside()    // Fluent method specific to Calzone
+    .build();
+```
+
+**Special Features:**
+- Boolean state for sauce placement
+- Simple toggle method for sauce location
+- Maintains immutability while allowing configuration
+- Default state (sauce outside) follows pizza conventions
+
+### 2. Chicago-Style Pizza
+ChicagoPizza demonstrates a more complex variant with multiple customizable features.
+
+```java
+class ChicagoPizza extends Pizza {
+    public enum CrustThickness { THIN, MEDIUM, THICK }
+    private final CrustThickness crustThickness;
+    private final boolean extraCheese;
+    private final boolean stuffedCrust;
+
+    public static class Builder extends Pizza.Builder<Builder> {
+        private CrustThickness crustThickness = CrustThickness.MEDIUM;
+        private boolean extraCheese = false;
+        private boolean stuffedCrust = false;
+
+        public Builder() {
+            setMaxToppings(8);  // Chicago style allows more toppings
+        }
+
+        // Business rule: Can't have stuffed crust with thin crust
+        public Builder stuffedCrust() {
+            if (crustThickness == CrustThickness.THIN) {
+                throw new IllegalStateException(
+                    "Cannot have stuffed crust with thin crust");
+            }
+            this.stuffedCrust = true;
+            return this;
+        }
+
+        @Override
+        public ChicagoPizza build() {
+            if (toppings.isEmpty()) {
+                throw new IllegalStateException(
+                    "Chicago pizza must have at least one topping");
+            }
+            return new ChicagoPizza(this);
+        }
+    }
+}
+
+// Usage example:
+ChicagoPizza pizza = new ChicagoPizza.Builder()
+    .crustThickness(THICK)
+    .addTopping(SAUSAGE)
+    .extraCheese()
+    .stuffedCrust()
+    .build();
+```
+
+**Special Features:**
+1. **Complex Business Rules**
+   - Validates crust thickness with stuffed crust option
+   - Requires at least one topping
+   - Allows more toppings than standard pizzas
+
+2. **Multiple Customization Options**
+   - Crust thickness (enum for type safety)
+   - Extra cheese option
+   - Stuffed crust option
+   - Increased topping limit
+
+3. **Validation Logic**
+   ```java
+   public Builder stuffedCrust() {
+       if (crustThickness == CrustThickness.THIN) {
+           throw new IllegalStateException("Cannot have stuffed crust with thin crust");
+       }
+       this.stuffedCrust = true;
+       return this;
+   }
+   ```
+   - Early validation in builder methods
+   - Clear error messages
+   - Maintains object consistency
+
+4. **Default Values**
+   ```java
+   private CrustThickness crustThickness = CrustThickness.MEDIUM;
+   private boolean extraCheese = false;
+   private boolean stuffedCrust = false;
+   ```
+   - Sensible defaults
+   - All options are optional
+   - Immutable final fields in the pizza class
+
+### Key Learning Points
+
+1. **Hierarchical Builder Pattern Benefits**
+   - Type safety through generics
+   - Method chaining with correct return types
+   - Shared validation logic in parent class
+   - Specialized validation in concrete classes
+
+2. **Business Rule Implementation**
+   - Rules enforced at build time
+   - Impossible to create invalid objects
+   - Clear validation messages
+   - Default values for optional parameters
+
+3. **Extensibility**
+   - Easy to add new pizza types
+   - Common functionality in base class
+   - Specialized behavior in concrete classes
+   - Type-safe builders for each variant
+
+4. **Code Organization**
+   - Inner builder classes for encapsulation
+   - Clear separation of concerns
+   - Immutable final products
+   - Fluent interface design
+
+These examples demonstrate how the Builder pattern can handle complex object creation with:
+- Multiple optional parameters
+- Business rule validation
+- Type safety
+- Immutability
+- Clear API design
+
 ## Real-World Examples
 
 ### 1. StringBuilder (Java Core)
