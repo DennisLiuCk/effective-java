@@ -66,6 +66,30 @@ public class SpellChecker {
 1. **Constructor Injection**: Pass dependency through constructor (as shown in example)
 2. **Setter Injection**: Set dependency through setter method
 3. **Interface Injection**: Dependency provides an injector method to inject itself
+4. **Factory Injection**: Pass a factory (e.g., Supplier) that creates the dependency
+
+### Factory-Based Dependency Injection Example
+```java
+// Using Supplier as a factory for dependency injection
+public class SupplierSpellChecker {
+    private final Dictionary dictionary;
+    
+    public SupplierSpellChecker(Supplier<? extends Dictionary> dictionaryFactory) {
+        this.dictionary = Objects.requireNonNull(dictionaryFactory.get());
+    }
+    // ... rest of implementation
+}
+
+// Usage:
+Supplier<Dictionary> factory = EnglishDictionary::new;
+SupplierSpellChecker checker = new SupplierSpellChecker(factory);
+```
+
+This pattern is useful when:
+- The dependency is expensive to create
+- You want to delay creation until first use
+- You need different instances for different use cases
+- You want to abstract away the creation logic
 
 ## When to Use Dependency Injection
 
