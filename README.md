@@ -54,6 +54,7 @@ Feel free to:
 ## Resources
 
 - [Effective Java (3rd Edition)](https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/)
+- [Effective Java (3rd Edition) Source Code](https://github.com/jbloch/effective-java-3e-source-code)
 - [Official Java Documentation](https://docs.oracle.com/en/java/)
 
 ## License
